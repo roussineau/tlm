@@ -1,0 +1,6 @@
+Acá voy a ir escribiendo texto plano.
+En parte va a servir para entrenar este modelo de juguete, y en parte también va a servir para que yo pueda practicar mi ortografía.
+Hoy es domingo 30 de noviembre de 2025. Eventualmente, todo terminará.
+Quizás intente escribir una oración por línea, pero veré.
+No está decidido, y no sé si afecta positiva o negativamente en el aprendizaje del modelo.
+Ni siquiera tengo un modelo, todavía.
