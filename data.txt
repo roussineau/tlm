@@ -8,4 +8,5 @@ Ni siquiera tengo un modelo, todavía.
 Bueno, ya tengo una especie de modelo.
 No quiero borrar ninguna línea una vez cree una, así que tengo que pensar mejor lo que escribo.
 Por ejemplo, técnicamente no tengo ninguna "especie de modelo".
-Solo empecé el tokenizador
+Solo empecé el tokenizador.
+No sé si debería agregar este texto al .gitignore, es como que descubran cómo tuiteo.

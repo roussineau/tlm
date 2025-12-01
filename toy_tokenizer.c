@@ -26,7 +26,7 @@
 
 typedef struct Vocab {
     uint8_t size; // El size se va a ir aumentando a medida que reconozcamos caracteres
-    int16_t char_to_id[MAX_VOCAB]; // Todos los char van a tener ID -1 al empezar, por eso necesitamos int16_t. Notar que si 
+    int16_t char_to_id[MAX_VOCAB]; // Todos los char van a tener ID -1 al empezar, por eso necesitamos int16_t. Notar que si no se ocupa todo el vocabulario (256 caracteres), van a quedar -1s.
     uint8_t id_to_char[MAX_VOCAB];    
 } vocab_t;
 
@@ -49,7 +49,7 @@ void add_new_char(vocab_t *v, uint8_t c){
 
 // Paso B: leer el archivo y poblar el vocabulario
 // Como estamos trabajando con extended ASCII, nuestro vocabulario es de a bytes (0-255).
-// Vamos a abrir el archivo en modo de lectura binria, leerlo byte a byte, y en cada lectura llamar a `add_new_char`
+// Vamos a abrir el archivo en modo de lectura binaria, leerlo byte a byte, y en cada lectura llamar a `add_new_char`
 
 void build_vocab_from_file(vocab_t *v, const char *filename){
     FILE *stream = fopen(filename, "rb"); // Stream de caracteres extended ASCII, modo de lectura binaria
@@ -64,9 +64,9 @@ void build_vocab_from_file(vocab_t *v, const char *filename){
 }
 
 // Paso C: Tokenizar el texto en IDs
-void encode_file(vocab_t *v, const char *filename, uint8_t **ids_array, size_t *out_length){
+void encode_file(vocab_t *v, const char *filename, uint8_t **ids_array, size_t *ids_array_length){
     // En la dirección de ids_array vamos a guardar un puntero al arreglo de IDs
-    // O sea que al modificar el valor al que apunta 
+    // O sea que vamos a querer modificar el valor al que apunta para agregar memoria dinámica
     FILE *stream1 = fopen(filename, "rb");
     if (!stream1) return;
 
@@ -90,9 +90,9 @@ void encode_file(vocab_t *v, const char *filename, uint8_t **ids_array, size_t *
         i++;
     }
 
-    *out_length = array_size;
+    *ids_array_length = array_size;
 
-    fclose(stream2);
+    fclose(stream2); // Segunda lectura completada
 }
 
 
