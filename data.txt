@@ -4,3 +4,8 @@ Hoy es domingo 30 de noviembre de 2025. Eventualmente, todo terminará.
 Quizás intente escribir una oración por línea, pero veré.
 No está decidido, y no sé si afecta positiva o negativamente en el aprendizaje del modelo.
 Ni siquiera tengo un modelo, todavía.
+
+Bueno, ya tengo una especie de modelo.
+No quiero borrar ninguna línea una vez cree una, así que tengo que pensar mejor lo que escribo.
+Por ejemplo, técnicamente no tengo ninguna "especie de modelo".
+Solo empecé el tokenizador
