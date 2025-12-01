@@ -1,19 +1,27 @@
-# Makefile para toy_tokenizer
-CC := gcc
-CFLAGS := -std=c11 -O2 -Wall -Wextra -Wpedantic
-TARGET := toy_tokenizer
-SRCS := toy_tokenizer.c
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11 -O2 -Isrc
 
-.PHONY: all run clean
+SRC_DIR = src
+OBJ_DIR = obj
+BIN = tlm
 
-all: $(TARGET)
+SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
+OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
 
-$(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET)
+all: $(BIN)
 
-# Ejecutar el programa — espera que exista data.txt en el directorio actual
-run: $(TARGET)
-	./$(TARGET)
+$(BIN): $(OBJ_FILES)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(TARGET) *.o
+	rm -rf $(OBJ_DIR) $(BIN)
+
+run:
+	make
+	./$(BIN)
+
+.PHONY: all clean

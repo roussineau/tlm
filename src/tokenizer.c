@@ -1,36 +1,9 @@
+#include "tokenizer.h"
+
 #include <stdio.h>
-#include <stdint.h>
 #include <string.h>
-#include <stdlib.h>
-
-/* ROADMAP
-    Para hacer un modelo de lenguaje mínimo, necesitamos:
-        1. Un mecanismo para pasar de texto a números (tokenización)
-        2. Una representación numérica entrenable de esos tokens (embeddings)
-        3. Un mecanismo para combinar información del contexto (atención)
-        4. Un mecanismo para predecir el próximo token (softmax + logits)
-        5. Algún método de balanceo (gradiente descendente)
-*/
-
-/* 1. TOKENIZACIÓN
-    Tenemos que poder cargar texto y convertirlo en números:
-        * Leer un archivo de texto
-        * Encontrar los caracteres que aparecen
-        * Darles un ID a cada uno
-        * Convertir el texto en una secuencia de IDs
-    Vamos a usar extended ASCII (0-255)
-*/
 
 // Paso A: construir el vocabulario
-#define MAX_VOCAB 256
-
-typedef struct Vocab {
-    uint8_t size; // El size se va a ir aumentando a medida que reconozcamos caracteres
-    int16_t char_to_id[MAX_VOCAB]; // Todos los char van a tener ID -1 al empezar, por eso necesitamos int16_t. Notar que si no se ocupa todo el vocabulario (256 caracteres), van a quedar -1s.
-    uint8_t id_to_char[MAX_VOCAB];    
-} vocab_t;
-
-
 vocab_t vocab_init(){
     vocab_t vocabulary;
     vocabulary.size = 0;
@@ -41,6 +14,8 @@ vocab_t vocab_init(){
 void add_new_char(vocab_t *v, uint8_t c){
     if (v->char_to_id[c] != -1) return; // Ya lo teníamos en el vocabulario
     
+    if (v->size >= MAX_VOCAB) return; // No pasarnos del buffer
+
     uint8_t new_id = v->size;
     v->char_to_id[c] = new_id;
     v->id_to_char[new_id] = c;
@@ -93,26 +68,4 @@ void encode_file(vocab_t *v, const char *filename, uint8_t **ids_array, size_t *
     *ids_array_length = array_size;
 
     fclose(stream2); // Segunda lectura completada
-}
-
-
-int main() {
-    vocab_t vocab = vocab_init();
-
-    uint8_t *tokenized_array = NULL;
-    size_t tokenized_array_length = 0;
-
-    build_vocab_from_file(&vocab, "data.txt");
-
-    encode_file(&vocab, "data.txt", &tokenized_array, &tokenized_array_length);
-
-    printf("Leídos %zu IDs:\n", tokenized_array_length);
-    for (size_t i = 0; i < tokenized_array_length; i++) {
-        printf("%u ", tokenized_array[i]);
-    }
-
-    printf("\n");
-
-    free(tokenized_array);
-    return 0;
 }
