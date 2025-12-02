@@ -12,6 +12,6 @@ typedef struct Dataset {
     uint8_t *targets;
 } dataset_t;
 
-dataset_t build_dataset(uint8_t *ids, size_t length);
+dataset_t build_dataset_from(uint8_t *ids, size_t length);
 
 #endif

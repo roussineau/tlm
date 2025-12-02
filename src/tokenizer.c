@@ -6,7 +6,7 @@
 // Paso A: construir el vocabulario
 vocab_t vocab_init(){
     vocab_t vocabulary;
-    vocabulary.size = 0;
+    vocabulary.size = 1; // El 0 será un caracter de padding en el dataset; nuestro vocabulario tendrá a lo sumo 255 caracteres reales
     memset(vocabulary.char_to_id, -1, sizeof(vocabulary.char_to_id)); // ID inicial = -1 para todos los caracteres
     return vocabulary;
 }
