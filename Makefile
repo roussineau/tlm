@@ -22,6 +22,7 @@ clean:
 
 run:
 	make
+	clear
 	./$(BIN)
 
 .PHONY: all clean

@@ -10,3 +10,11 @@ No quiero borrar ninguna línea una vez cree una, así que tengo que pensar mejo
 Por ejemplo, técnicamente no tengo ninguna "especie de modelo".
 Solo empecé el tokenizador.
 No sé si debería agregar este texto al .gitignore, es como que descubran cómo tuiteo.
+
+Recién terminé el dataset, está bueno dentro de todo, aunque claramente se puede complejizar un poco más.
+Por ejemplo, lo pensé con un context length fijo, cuando quizás podría hacerse con un rango de context length que llegue hasta un máximo.
+No tengo idea de si eso tiene sentido; estoy aprendiendo.
+
+Por otra parte, sigo escribiendo esto sin borrar líneas previas.
+Además, una vez aprieto punto, aprieto también enter, pero la verdad no tiene mucho sentido. Suelo contradecirme.
+Panchos rosas.

@@ -11,7 +11,6 @@ Para hacer un modelo de lenguaje mínimo, necesitamos:
 De la primera parte se encarga el `tokenizer`, que convierte una secuencia de caracteres ASCII en una
 secuencia de tokens.
 
-De la segunda parte se va a encargar el `dataset`, que usa el tokenizer para leer un corpus, construye
-pares (input, target), aplica context length y genera batches de ejemplos para entrenamiento.
-
-Un modelo, finalmente, recibe un batch de secuencias ed IDs, aprende a mapearlas a un target
+El código de `dataset` se encarga de representar ese archivo tokenizado como secuencias entrenables.
+La traducción tiene la forma `inputs[i]` = `targets[i]`, donde cada lista del arreglo `inputs` tiene
+longitud `CONTEXT_LENGTH`.
