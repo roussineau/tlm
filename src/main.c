@@ -30,8 +30,8 @@ int main() {
 
     printf("Dataset generado con %zu muestras.\n", ds.num_samples);
 
-    // 4. Imprimir las primeras 20 muestras de debug
-    size_t to_print = ds.num_samples < 20 ? ds.num_samples : 20;
+    // 4. Imprimir las primeras 1500 muestras de debug
+    size_t to_print = ds.num_samples < 1500 ? ds.num_samples : 1500;
 
     for (size_t i = 0; i < to_print; i++) {
         printf("Sample %zu: [", i);
