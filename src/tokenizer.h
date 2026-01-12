@@ -17,7 +17,7 @@
 
 typedef struct Vocab {
     uint16_t size; // El size se va a ir aumentando a medida que reconozcamos caracteres
-    int16_t char_to_id[MAX_VOCAB]; // Todos los char van a tener ID -1 al empezar, por eso necesitamos int16_t. Notar que si no se ocupa todo el vocabulario (256 caracteres), van a quedar -1s.
+    int16_t char_to_id[MAX_VOCAB]; // Todos los char van a tener ID = -1 al empezar, por eso necesitamos int16_t. Notar que si no se ocupa todo el vocabulario (256 caracteres), van a quedar -1s.
     uint8_t id_to_char[MAX_VOCAB];    
 } vocab_t;
 

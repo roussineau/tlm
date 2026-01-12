@@ -18,3 +18,25 @@ No tengo idea de si eso tiene sentido; estoy aprendiendo.
 Por otra parte, sigo escribiendo esto sin borrar líneas previas.
 Además, una vez aprieto punto, aprieto también enter, pero la verdad no tiene mucho sentido. Suelo contradecirme.
 Panchos rosas.
+
+Bueno, volví después de unas semanas de parón. Estuve preparando el recuperatorio de PLP, y posteriormente el final.
+Además, estuve jugando al Blasphemous. Muy bueno, una lástima que para poder sacar el 100% de las misiones tendría que haber visitado la tumba de Perpetva antes de pelear con Esdras.
+Y para colmo, en el combate con Esdras hicimos kill por kill, o sea, nos matamos mutuamente, así que no pude ver nada luego de matarlo. Directamente entré a la Archicatedral.
+
+Sigo escribiendo cosas porque tengo entendido que el modelo necesita muchísima información para su entrenamiento e, independientemente de que seguramente me convenga generar texto con un LLM, quiero ver primero cuánto se puede lograr con un texto pequeño como este.
+Además, estaría bueno ver si empieza a generar texto como yo. Sería una gran ofensa contra mi forma de escribir, la verdad.
+Más adelante me gustaría ver si se pueden implementar funcionalidades con Prolog. En la facu dijeron que hace muchos años se veía a Prolog como un lenguaje del futuro, con mucho potencial para inteligencia artificial y procesamiento de lenguaje natural.
+Veremos, dijo el ciego.
+
+Piripe Pepino anda por el campo. Lo estoy mirando ahora, mientras escribo esto. Cambié de lugar las cosas de la cocina, y ahora tengo mi escritorio (la mesa verde) pegado a la ventana.
+Me olvidé de mencionar que hoy es 1 de enero de 2026. Intenté dormir algo, pero vengo teniendo problemas para conciliar el sueño. Me despierto a las 3, y no me duermo hasta las 6.
+Hoy fue peor, porque estuve en lo de mi abuela para las 00.00, me acosté tipo 00.40, dormí hasta las 2, y me quedé acostado pero despierto hasta las 06.00 sin poder dormirme.
+Entonces decidí que hoy tiene que ser el último día que me pase esto, por lo que me levanté y arranqué el día (y el año), y la idea es no dormir siesta ni nada por el estilo.
+Hace mucho que no hago nada como esto, de pasar muchas horas de vigilia con pocas de sueño, pero es lo que hay. Venceremos.
+
+Esto lo estoy escribiendo en NeoVim. Estoy aprendiendo a usar más la terminal, así que me puse a aprender esto.
+Además la personalicé un poco, poniéndole el tema Dracula. Está bastante bien la verdad.
+
+Qué onda zapato, acá estoy de nuevo escribiendo en NeoVim, solo que esta vez con LazyVim en lugar de el Nvim a pelo. Tengo que configurarlo bien, porque no me está tomando bien algunos keybinds en modo normal, y se ven mal algunas palabras (subrayadas como si fuesen links, aunque quizás sean mas bien errores de idioma).
+
+Un poco de brillitos para salir adelante. (Esa era una prueba para copiar y pegar con Ctrl+Shift+v.)|

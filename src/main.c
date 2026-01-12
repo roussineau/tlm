@@ -5,50 +5,49 @@
 #include <stdlib.h>
 #include "tokenizer.h"
 #include "dataset.h"
+#include "embeddings.h"
 #include "defines.h"
 
 int main() {
-    vocab_t vocab = vocab_init();
-
-    uint8_t *tokenized_array = NULL;
-    size_t tokenized_array_length = 0;
-
+    
     // 1. Construir vocabulario
+    vocab_t vocab = vocab_init();
     build_vocab_from_file(&vocab, "data.txt");
 
+    printf("Vocab size: %d\n", vocab.size);
+
     // 2. Tokenizar archivo
-    encode_file(&vocab, "data.txt", &tokenized_array, &tokenized_array_length);
+    uint8_t *ids = NULL;
+    size_t ids_len = 0;
+    encode_file(&vocab, "data.txt", &ids, &ids_len);
 
-    printf("Leídos %zu IDs:\n", tokenized_array_length);
-    for (size_t i = 0; i < tokenized_array_length; i++) {
-        printf("%u ", tokenized_array[i]);
-    }
-    printf("\n\n");
+    // 3. Construir dataset
+    dataset_t dataset = build_dataset_from(ids, ids_len);
+    printf("Dataset con %zu muestras\n", dataset.num_samples);
 
-    // 3. Construir dataset variable
-    dataset_t ds = build_dataset_from(tokenized_array, tokenized_array_length);
+    // 4. Inicializar embeddings
+    embedding_table_t emb_table = init_embeddings(vocab.size);
 
-    printf("Dataset generado con %zu muestras.\n", ds.num_samples);
+    // 5. Testear embeddings de una fila del dataset
+    size_t test_row = 0;
+    printf("\nSample %zu\n", test_row);
 
-    // 4. Imprimir las primeras 1500 muestras de debug
-    size_t to_print = ds.num_samples < 1500 ? ds.num_samples : 1500;
+    for (int i = 0; i < MAX_CONTEXT_SIZE; i++) {
+        uint8_t token = dataset.inputs[test_row][i];
+        float *vec = get_embedding_from_id(&emb_table, token);
 
-    for (size_t i = 0; i < to_print; i++) {
-        printf("Sample %zu: [", i);
-        for (size_t j = 0; j < MAX_CONTEXT_SIZE; j++) {
-            printf("%u", ds.inputs[i][j]);
-            if (j + 1 < MAX_CONTEXT_SIZE) printf(", ");
+        printf("Token ID %d → [", token);
+        for (int d = 0; d < EMBEDDING_DIM; d++) {
+            printf("%+.3f ", vec[d]);
         }
-        printf("] -> %u\n", ds.targets[i]);
+        printf("]\n");
     }
 
-    // 5. Liberar memoria
-    for (size_t i = 0; i < ds.num_samples; i++) {
-        free(ds.inputs[i]);
-    }
-    free(ds.inputs);
-    free(ds.targets);
-    free(tokenized_array);
+    printf("Target ID: %d\n", dataset.targets[test_row]);
+
+    // 6. Cleanup mínimo
+    free(ids);
+    // (el resto lo liberamos más adelante)
 
     return 0;
 }

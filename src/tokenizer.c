@@ -7,7 +7,7 @@
 vocab_t vocab_init(){
     vocab_t vocabulary;
     vocabulary.size = 1; // El 0 será un caracter de padding en el dataset; nuestro vocabulario tendrá a lo sumo 255 caracteres reales
-    memset(vocabulary.char_to_id, -1, sizeof(vocabulary.char_to_id)); // ID inicial = -1 para todos los caracteres
+    memset(vocabulary.char_to_id, -1, sizeof(vocabulary.char_to_id)); // ID inicial = -1 para todos los caracteres. Duda: la documentación menciona que el valor del segundo parámetro se convierte a unsigned character.
     return vocabulary;
 }
 
@@ -51,7 +51,7 @@ void encode_file(vocab_t *v, const char *filename, uint8_t **ids_array, size_t *
         array_size++;
     }
 
-    fclose(stream1); // Primera lectura completada
+    fclose(stream1); // Primera lectura completada para saber el tamaño del archivo y por ende cuánta memoria alocar
 
     FILE *stream2 = fopen(filename, "rb");
     if (!stream2) return;

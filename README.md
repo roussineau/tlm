@@ -13,4 +13,5 @@ secuencia de tokens.
 
 El código de `dataset` se encarga de representar ese archivo tokenizado como secuencias entrenables.
 La traducción tiene la forma `inputs[i]` = `targets[i]`, donde cada lista del arreglo `inputs` tiene
-longitud `CONTEXT_LENGTH`.
+longitud `MAX_CONTEXT_LENGTH`.
+

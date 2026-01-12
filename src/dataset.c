@@ -16,6 +16,8 @@ dataset_t build_dataset_from(uint8_t *ids, size_t length){
     // Paso 2: empezar a llenar los inputs y targets
     size_t row = 0;
 
+    // Vamos a ir llenando secuencialmente todos los samples de contexto con longitud 1, 2, ..., MAX_CONTEXT_SIZE
+    // Duda: rever este orden más adelante
     size_t current_context_size = 1;
     while (current_context_size <= MAX_CONTEXT_SIZE) {
 
