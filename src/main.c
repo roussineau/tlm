@@ -28,22 +28,17 @@ int main() {
     // 4. Inicializar embeddings
     embedding_table_t emb_table = init_embeddings(vocab.size);
 
-    // 5. Testear embeddings de una fila del dataset
-    size_t test_row = 0;
-    printf("\nSample %zu\n", test_row);
 
-    for (int i = 0; i < MAX_CONTEXT_SIZE; i++) {
-        uint8_t token = dataset.inputs[test_row][i];
-        float *vec = get_embedding_from_id(&emb_table, token);
+    // Testing de embed_and_aggregate
+    uint8_t inp[MAX_CONTEXT_SIZE] = {1};
 
-        printf("Token ID %d → [", token);
-        for (int d = 0; d < EMBEDDING_DIM; d++) {
-            printf("%+.3f ", vec[d]);
-        }
-        printf("]\n");
+    float out[EMBEDDING_DIM];
+
+    embed_and_aggregate(&emb_table, &inp, &out);
+
+    for(int i = 0; i < EMBEDDING_DIM; i++) {
+        printf("%.3f\n", out[i]);
     }
-
-    printf("Target ID: %d\n", dataset.targets[test_row]);
 
     // 6. Cleanup mínimo
     free(ids);

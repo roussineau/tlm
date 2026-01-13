@@ -26,15 +26,17 @@ float* get_embedding_from_id(embedding_table_t *table, uint8_t token_id){
     return &table->data[token_id * EMBEDDING_DIM];
 }
 
-float** lookup_embeddings(embedding_table_t *table, uint8_t *input){
-    // lookup es un arreglo MAX_CONTEXT_SIZE punteros a float
-    // De esta forma transformamos un input de un vector de IDs enteros a un vector de embeddings
-    float** lookup = malloc(sizeof(float*) * MAX_CONTEXT_SIZE);
-
-    for(int i = 0; i < MAX_CONTEXT_SIZE; i++) {
-        lookup[i] = get_embedding_from_id(table, input[i]);
+void embed_and_aggregate(embedding_table_t *table, uint8_t *input, float *out_context_vector){
+    for (int i = 0; i < EMBEDDING_DIM; i++) {
+        out_context_vector[i] = 0;
     }
 
-    return lookup;
+    for (int j = 0; j < MAX_CONTEXT_SIZE; j++){
+        float *embed = get_embedding_from_id(table, input[j]);
+        for (int i = 0; i < EMBEDDING_DIM; i++){
+            out_context_vector[i] += embed[i];
+        }
+    }
 }
+
 
