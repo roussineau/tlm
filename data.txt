@@ -37,8 +37,21 @@ Hace mucho que no hago nada como esto, de pasar muchas horas de vigilia con poca
 Esto lo estoy escribiendo en NeoVim. Estoy aprendiendo a usar más la terminal, así que me puse a aprender esto.
 Además la personalicé un poco, poniéndole el tema Dracula. Está bastante bien la verdad.
 
-Qué onda zapato, acá estoy de nuevo escribiendo en NeoVim, solo que esta vez con LazyVim en lugar de el Nvim a pelo. Tengo que configurarlo bien, porque no me está tomando bien algunos keybinds en modo normal, y se ven mal algunas palabras (subrayadas como si fuesen links, aunque quizás sean mas bien errores de idioma).
+Qué onda zapato, acá estoy de nuevo escribiendo en NeoVim, solo que esta vez con LazyVim en lugar de el NeoVim a pelo. Tengo que configurarlo bien, porque no me está tomando bien algunos keybinds en modo normal, y se ven mal algunas palabras (subrayadas como si fuesen links, aunque quizás sean mas bien errores de idioma).
 
 Un poco de brillitos para salir adelante. (Esa era una prueba para copiar y pegar con Ctrl+Shift+v.)|
 
 Esto es una prueba para corregir el rendimiento de LazyGit. En el último commit que hice anduvo muy mal, con mucho lag entre letras al escribir el commit.
+
+Bueno, voy a escribir un poco más. Me gustaría no tener que poner mucho texto generado con IA, pero si es necesario lo voy a hacer. De momento, vemos si alcanza con estas boludeces que escribo cada tanto.
+
+Hoy estoy en lo de Inés, como hace una semana aproximadamente. También me estoy acostumbrando a trabajar con NeoVim y escribir más rápido con la técnica de tener los dedos siempre posicionados en la home row.
+Sé que ambas cosas tiene una curva de aprendizaje, pero también estoy en vacaciones, así que si no es ahora no es nunca pienso yo.
+Cincuenta líneas de texto son pocas, así que tengo que escribir bastante más. ¿Alcanzará con unas... 200?
+
+Bueno, sobre el proyecto y cómo se viene desarrollando:
+Al momento de escribir este texto, estoy empezando con la transformación lineal que hay que hacer por capas. Voy a escribir lo que entiendo que sigue por realizarse no solo para tener más texto, sino para ordenar las ideas y leer más adelante a ver qué tan gagá estaba.
+
+Hasta ahora tenemos el siguiente flujo de transformación de datos: de un txt plano pasamos a un conjunto de tokens. Luego, el struct dataset nos sirve para mapear ventanas de IDs (inputs) a su siguiente token (target). Después, sobre embeddings, lo que hacemos es tomar un input (conjunto de IDs) y "comprimirlo" en un context vector que es la suma de los embeddings de los IDs del input. El siguiente paso será chequear qué token es el más probable dado ese context vector mediante chequearlo en una matriz de pesos (W) y sumarle un vector de sesgo (bias). Esto es la transformación lineal logit = W * h + b, siendo h nuestro context vector.
+
+Suficiente cháchara, vamos a codear un poco. Pero antes, voy a practicar un poco la escritura en el teclado.

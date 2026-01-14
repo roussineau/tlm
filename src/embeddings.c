@@ -13,8 +13,8 @@ embedding_table_t init_embeddings(uint8_t vocab_size) {
         table.data[i] = 0.0f;
     }
 
-    // Los embeddings van a estar todos uno detrás de otro, de forma tal que
-    // el embedding del token i va de data[i*EMBEDDING_DIM] hasta data[i*EMBEDDING_DIM + EMBEDDING_DIM-1]
+    // Los embeddings van a estar todos uno detrás de otro, de forma tal que el embedding
+    // del token i va de data[i*EMBEDDING_DIM] hasta data[i*EMBEDDING_DIM + EMBEDDING_DIM-1]
     for(int i = EMBEDDING_DIM; i < vocab_size * EMBEDDING_DIM; i++) {
         table.data[i] = ((float)rand() / RAND_MAX) * 0.02f - 0.01f;
     }
