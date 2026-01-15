@@ -29,4 +29,6 @@ void build_vocab_from_file(vocab_t *v, const char *filename);
 
 void encode_file(vocab_t *v, const char *filename, uint8_t **ids_array, size_t *ids_array_length);
 
+void print_vocab(vocab_t *v);
+
 #endif

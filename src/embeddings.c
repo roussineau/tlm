@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-embedding_table_t init_embeddings(uint8_t vocab_size) {
+embedding_table_t init_embeddings(uint16_t vocab_size) {
     embedding_table_t table;
     table.vocab_size = vocab_size;
     table.data = malloc(vocab_size * EMBEDDING_DIM * sizeof(float));

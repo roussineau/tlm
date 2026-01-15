@@ -1,15 +1,16 @@
 #include "output_layer.h"
 #include "embeddings.h"
+#include "defines.h"
 
-#include <stdint.h>
+#include <float.h>
 
-output_layer_t init_output_layer(uint8_t vocab_size){
+output_layer_t init_output_layer(uint16_t vocab_size){
     float *weights = malloc(sizeof(float) * EMBEDDING_DIM * vocab_size);
     float *bias = malloc(sizeof(float) * vocab_size);
 
     // Inicializar valores de la matriz de pesos
     for (int i = 0; i < EMBEDDING_DIM * vocab_size; i++){
-        weights[i] = ((float)rand() / RAND_MAX) * 0.02f - 0.01f;
+        weights[i] = ((float)rand() / RAND_MAX) * 0.02f - 0.01f; // [-0,01; 0,01]
     }
 
     // Inicializar valores del vector de sesgo
@@ -43,6 +44,24 @@ void compute_logits(output_layer_t *layer, float *context, float *output_logits)
     }
 }
 
-// uint8_t predict_next_token(embedding_table *emb, output_layer_t *out, uint8_t *context_ids){
+uint8_t predict_next_token(embedding_table_t *emb, output_layer_t *out, uint8_t *context_ids){
+    // La ventana de IDs que usamos es context_ids
+    float context_vector[EMBEDDING_DIM];
+    embed_and_aggregate(emb, context_ids, context_vector);
     
-// }
+    float logits[out->vocab_size];
+    compute_logits(out, context_vector, logits);
+
+    logits[0] = -FLT_MAX; // Enmascaramos el token 0 porque es reservado
+    float score = logits[0];
+    int id = 0;
+
+    for (int i = 1; i < out->vocab_size; i++){
+        if (logits[i] > score) {
+            score = logits[i];
+            id = i;
+        }
+    }
+
+    return (uint8_t)id;
+}

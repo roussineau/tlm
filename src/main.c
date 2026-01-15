@@ -3,18 +3,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <string.h>
 #include "tokenizer.h"
 #include "dataset.h"
 #include "embeddings.h"
+#include "output_layer.h"
 #include "defines.h"
 
 int main() {
-    
+    srand(time(NULL));
+
     // 1. Construir vocabulario
     vocab_t vocab = vocab_init();
     build_vocab_from_file(&vocab, "data.txt");
-
-    printf("Vocab size: %d\n", vocab.size);
+    print_vocab(&vocab);
 
     // 2. Tokenizar archivo
     uint8_t *ids = NULL;
@@ -28,21 +31,46 @@ int main() {
     // 4. Inicializar embeddings
     embedding_table_t emb_table = init_embeddings(vocab.size);
 
+    // 5. Inicializar output layer (matriz de pesos y vector de sesgo)
+    output_layer_t out = init_output_layer(vocab.size);
+    
+    // 6. Prueba de generación autorregresiva con un input elegido
+    uint8_t context[MAX_CONTEXT_SIZE];
+    memcpy(context, dataset.inputs[93000], MAX_CONTEXT_SIZE);
 
-    // Testing de embed_and_aggregate
-    uint8_t inp[MAX_CONTEXT_SIZE] = {1};
+    printf("Input: [");
+    for (int i = 0; i < MAX_CONTEXT_SIZE; i++){
+        printf("%d", context[i]);
+        if (!(i == MAX_CONTEXT_SIZE-1)){
+            printf(", ");
+        }
+    }
+    printf("]\n");
 
-    float out[EMBEDDING_DIM];
+    int steps = 20;
 
-    embed_and_aggregate(&emb_table, &inp, &out);
 
-    for(int i = 0; i < EMBEDDING_DIM; i++) {
-        printf("%.3f\n", out[i]);
+    for (int i = 0; i < steps; i++) {
+        uint8_t next = predict_next_token(&emb_table, &out, context);
+
+        uint8_t ch = vocab.id_to_char[next];
+        int16_t num = vocab.char_to_id[ch];
+        printf("%d ", next);
+        printf("%d ", num);
+        printf("%c ", ch);
+
+        printf("\n");
+        // shift de la ventana
+        for (int j = 0; j < MAX_CONTEXT_SIZE - 1; j++) {
+            context[j] = context[j + 1];
+        }
+        context[MAX_CONTEXT_SIZE - 1] = next;
     }
 
-    // 6. Cleanup mínimo
+    
     free(ids);
-    // (el resto lo liberamos más adelante)
 
     return 0;
 }
+
+

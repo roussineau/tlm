@@ -12,7 +12,6 @@ dataset_t build_dataset_from(uint8_t *ids, size_t length){
 
     uint8_t *targets = malloc(num_total_samples * sizeof(uint8_t));
 
-
     // Paso 2: empezar a llenar los inputs y targets
     size_t row = 0;
 

@@ -69,3 +69,14 @@ void encode_file(vocab_t *v, const char *filename, uint8_t **ids_array, size_t *
 
     fclose(stream2); // Segunda lectura completada
 }
+
+void print_vocab(vocab_t *v){
+    printf("Tamaño del vocabulario: %d\n", v->size);
+    
+    for (int i = 1; i < v->size; i++){ // Los tokens van desde 0 hasta (v->size - 1), con el 0 reservado para padding.
+        uint8_t caracter = v->id_to_char[i];
+        printf("Caracter: %c; ", caracter);
+        printf("ID esperado: %d; ", i);
+        printf("ID efectivo: %d\n", v->char_to_id[caracter]);
+    }
+}

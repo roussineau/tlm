@@ -39,7 +39,7 @@ Además la personalicé un poco, poniéndole el tema Dracula. Está bastante bie
 
 Qué onda zapato, acá estoy de nuevo escribiendo en NeoVim, solo que esta vez con LazyVim en lugar de el NeoVim a pelo. Tengo que configurarlo bien, porque no me está tomando bien algunos keybinds en modo normal, y se ven mal algunas palabras (subrayadas como si fuesen links, aunque quizás sean mas bien errores de idioma).
 
-Un poco de brillitos para salir adelante. (Esa era una prueba para copiar y pegar con Ctrl+Shift+v.)|
+Un poco de brillitos para salir adelante. (Esa era una prueba para copiar y pegar con Ctrl+Shift+v.)
 
 Esto es una prueba para corregir el rendimiento de LazyGit. En el último commit que hice anduvo muy mal, con mucho lag entre letras al escribir el commit.
 
