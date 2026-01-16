@@ -19,7 +19,7 @@ int main() {
     // 1. Construir vocabulario
     vocab_t vocab = vocab_init();
     build_vocab_from_file(&vocab, "data_processed.txt");
-    print_vocab(&vocab);
+    // print_vocab(&vocab);
 
     // 2. Tokenizar archivo
     uint8_t *ids = NULL;
@@ -40,14 +40,14 @@ int main() {
     uint8_t context[MAX_CONTEXT_SIZE];
     memcpy(context, dataset.inputs[93000], MAX_CONTEXT_SIZE);
 
-    printf("Input: [");
-    for (int i = 0; i < MAX_CONTEXT_SIZE; i++){
-        printf("%d", context[i]);
-        if (!(i == MAX_CONTEXT_SIZE-1)){
-            printf(", ");
-        }
-    }
-    printf("]\n");
+    // printf("Input: [");
+    // for (int i = 0; i < MAX_CONTEXT_SIZE; i++){
+    //     printf("%d", context[i]);
+    //     if (!(i == MAX_CONTEXT_SIZE-1)){
+    //         printf(", ");
+    //     }
+    // }
+    // printf("]\n");
 
     int steps = 20;
 

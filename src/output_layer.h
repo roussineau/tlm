@@ -15,6 +15,8 @@ output_layer_t init_output_layer(uint16_t vocab_size);
 
 void compute_logits(output_layer_t *layer, float *context, float *out_logits);
 
+void softmax(float *logit, float *probs, uint16_t n);
+
 uint8_t predict_next_token(embedding_table_t *emb, output_layer_t *out, uint8_t *context);
 
 #endif

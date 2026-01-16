@@ -3,6 +3,7 @@
 #include "defines.h"
 
 #include <float.h>
+#include <math.h>
 
 output_layer_t init_output_layer(uint16_t vocab_size){
     float *weights = malloc(sizeof(float) * EMBEDDING_DIM * vocab_size);
@@ -44,6 +45,31 @@ void compute_logits(output_layer_t *layer, float *context, float *output_logits)
     }
 }
 
+void softmax(float *logit, float *probs, uint16_t vocab_size){
+    // Conseguir el máximo para corregir el overflow
+    float max = logit[0];
+    for (int i = 0; i < vocab_size; i++){
+        if (logit[i] > max) {
+            max = logit[i];
+        } 
+    }
+
+    float sum = 0.0f;
+    for (int i = 0; i < vocab_size; i++){
+        // Exponenciar con desplazamiento 
+        probs[i] = expf(logit[i] - max);
+        // Sumar
+        sum += probs[i];
+    }
+
+    // Normalizar
+    for (int i = 0; i < vocab_size; i++){
+        probs[i] /= sum;
+    }
+}
+
+
+
 uint8_t predict_next_token(embedding_table_t *emb, output_layer_t *out, uint8_t *context_ids){
     // La ventana de IDs que usamos es context_ids
     float context_vector[EMBEDDING_DIM];
@@ -53,12 +79,15 @@ uint8_t predict_next_token(embedding_table_t *emb, output_layer_t *out, uint8_t 
     compute_logits(out, context_vector, logits);
 
     logits[0] = -FLT_MAX; // Enmascaramos el token 0 porque es reservado
-    float score = logits[0];
-    int id = 0;
 
+    float probs[out->vocab_size];
+    softmax(logits, probs, out->vocab_size);
+
+    float max_prob = probs[0];
+    int id = 0;
     for (int i = 1; i < out->vocab_size; i++){
-        if (logits[i] > score) {
-            score = logits[i];
+        if (probs[i] > max_prob) {
+            max_prob = probs[i];
             id = i;
         }
     }
