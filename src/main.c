@@ -1,10 +1,9 @@
 #include <stdio.h>
-#include "tokenizer.h"
-
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+
+#include "preprocess_file.h"
 #include "tokenizer.h"
 #include "dataset.h"
 #include "embeddings.h"
@@ -14,9 +13,12 @@
 int main() {
     srand(time(NULL));
 
+    // 0. Preprocesar el archivo
+    preprocess_file("data.txt", "data_processed.txt");
+
     // 1. Construir vocabulario
     vocab_t vocab = vocab_init();
-    build_vocab_from_file(&vocab, "data.txt");
+    build_vocab_from_file(&vocab, "data_processed.txt");
     print_vocab(&vocab);
 
     // 2. Tokenizar archivo
