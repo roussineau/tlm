@@ -1,0 +1,191 @@
+#include "training.h"
+#include <math.h>
+#include <float.h>
+#include <stdio.h>
+
+float cross_entropy_loss(const float *probs, uint8_t target_id){ 
+    float p = fmaxf(probs[target_id], 1e-9f);
+    return -logf(p);
+}
+
+// dlogits
+void backward_logits(const float *probs, uint8_t target_id, float *dlogits, uint16_t vocab_size){
+    for (int i = 0; i < vocab_size; i++){
+        dlogits[i] = probs[i];
+    }
+    dlogits[target_id] -= 1;
+}
+
+// dW, db y dcontext
+void backward_output_layer(
+    const float *dlogits,
+    const float *context,
+    float *dcontext,
+    float *dW,
+    float *db,
+    const float *W,
+    uint16_t vocab_size,
+    uint16_t embed_dim
+){
+    // Inicializo dW en 0
+    for (int i = 0; i < vocab_size; i++){
+        for (int j = 0; j < embed_dim; j++){
+            dW[i * embed_dim + j] = 0;
+        }
+    }
+    // Inicializo db en 0
+    for (int i = 0; i < vocab_size; i++){
+        db[i] = 0;
+    }
+    // Inicializo dcontext en 0
+    for (int i = 0; i < embed_dim; i++){
+        dcontext[i] = 0;
+    }
+    // Regla de la cadena
+    for (int i = 0; i < vocab_size; i++){
+        db[i] += dlogits[i];
+        for (int j = 0; j < embed_dim; j++){
+            dW[i * embed_dim + j] += dlogits[i] * context[j];
+            dcontext[j] += dlogits[i] * W[i * embed_dim + j];
+        }
+    }
+}
+
+// dE
+void backward_embeddings(
+    const uint8_t *context_ids,
+    const float *dcontext,
+    embedding_table_t *emb,
+    uint16_t embed_dim
+){
+    float scale = 1.0f / MAX_CONTEXT_SIZE;
+
+    for (int t = 0; t < MAX_CONTEXT_SIZE; t++){
+        uint8_t token_id = context_ids[t];
+        if (token_id == 0) continue;
+
+        for (int j = 0; j < embed_dim; j++){
+            emb->dE[token_id * embed_dim + j]
+                += scale * dcontext[j];
+        }
+    }
+}
+
+// Updates
+
+void update_output_layer(
+    output_layer_t *out,
+    float learning_rate,
+    uint16_t embed_dim
+){
+    int vocab_size = out->vocab_size;
+
+    // W
+    for (int i = 0; i < vocab_size * embed_dim; i++) {
+        out->W[i] -= learning_rate * out->dW[i];
+        out->dW[i] = 0.0f; // reset gradiente
+    }
+
+    // b
+    for (int i = 0; i < vocab_size; i++) {
+        out->b[i] -= learning_rate * out->db[i];
+        out->db[i] = 0.0f;
+    }
+}
+
+void update_embeddings(
+    embedding_table_t *emb,
+    float learning_rate
+){
+    int size = emb->vocab_size * EMBEDDING_DIM;
+
+    for (int i = 0; i < size; i++) {
+        emb->data[i] -= learning_rate * emb->dE[i];
+        emb->dE[i] = 0.0f;
+    }
+}
+
+// Entrenamiento
+
+float train_step(
+    embedding_table_t *emb,
+    output_layer_t *out,
+    uint8_t *context_ids,
+    uint8_t target_id,
+    float learning_rate
+){
+    /* ---------- FORWARD ---------- */
+
+    float context[EMBEDDING_DIM];
+    embed_and_aggregate(emb, context_ids, context);
+
+    float logits[out->vocab_size];
+    compute_logits(out, context, logits);
+
+    logits[0] = -FLT_MAX; // padding prohibido
+
+    float probs[out->vocab_size];
+    softmax(logits, probs, out->vocab_size);
+
+    /* ---------- LOSS ---------- */
+
+    float loss = cross_entropy_loss(probs, target_id);
+
+    /* ---------- BACKWARD ---------- */
+
+    float dlogits[out->vocab_size];
+    backward_logits(probs, target_id, dlogits, out->vocab_size);
+
+    float dcontext[EMBEDDING_DIM];
+    backward_output_layer(
+        dlogits,
+        context,
+        dcontext,
+        out->dW,
+        out->db,
+        out->W,
+        out->vocab_size,
+        EMBEDDING_DIM
+    );
+
+    backward_embeddings(
+        context_ids,
+        dcontext,
+        emb,
+        EMBEDDING_DIM
+    );
+
+    /* ---------- UPDATE ---------- */
+
+    update_output_layer(out, learning_rate, EMBEDDING_DIM);
+    update_embeddings(emb, learning_rate);
+
+    return loss;
+}
+
+void train(
+    dataset_t *dataset,
+    embedding_table_t *emb,
+    output_layer_t *out
+){
+    int epochs = 10;
+    float lr = 0.05f;
+
+    for (int e = 0; e < epochs; e++) {
+        float total_loss = 0.0f;
+
+        for (size_t i = 0; i < dataset->num_samples; i++) {
+            total_loss += train_step(
+                emb,
+                out,
+                dataset->inputs[i],
+                dataset->targets[i],
+                lr
+            );
+        }
+
+        printf("Epoch %d | Loss promedio: %.4f\n",
+               e,
+               total_loss / dataset->num_samples);
+    }
+}

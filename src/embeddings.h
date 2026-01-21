@@ -9,6 +9,7 @@
 typedef struct EmbeddingTable {
     uint16_t vocab_size;
     float *data;
+    float *dE;
 } embedding_table_t;
 // Una embedding table es una tabla donde cada token k está mapeado a un vector table[k]
 

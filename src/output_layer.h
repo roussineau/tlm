@@ -7,8 +7,10 @@
 
 typedef struct OutputLayer {
     uint16_t vocab_size;
-    float *W;  // matriz de pesos
-    float *b;  // vector de sesgo
+    float *W;  // matriz de pesos (vocab_size x embed_dim) 
+    float *b;  // vector de sesgo (vocab_size)
+    float *dW;
+    float *db;
 } output_layer_t;
 
 output_layer_t init_output_layer(uint16_t vocab_size);

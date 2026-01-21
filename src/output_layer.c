@@ -2,27 +2,35 @@
 #include "embeddings.h"
 #include "defines.h"
 
+#include "training.h"
+
 #include <float.h>
 #include <math.h>
 
 output_layer_t init_output_layer(uint16_t vocab_size){
     float *weights = malloc(sizeof(float) * EMBEDDING_DIM * vocab_size);
     float *bias = malloc(sizeof(float) * vocab_size);
+    float *dweights = malloc(sizeof(float) * EMBEDDING_DIM * vocab_size);
+    float *dbias = malloc(sizeof(float) * vocab_size);
 
     // Inicializar valores de la matriz de pesos
     for (int i = 0; i < EMBEDDING_DIM * vocab_size; i++){
         weights[i] = ((float)rand() / RAND_MAX) * 0.02f - 0.01f; // [-0,01; 0,01]
+        dweights[i] = 0.0f;
     }
 
     // Inicializar valores del vector de sesgo
     for (int i = 0; i < vocab_size; i++){
         bias[i] = 0.0f;
+        dbias[i] = 0.0f;
     }
 
     output_layer_t layer = {
         .vocab_size = vocab_size,
         .W = weights,
-        .b = bias
+        .b = bias,
+        .dW = dweights,
+        .db = dbias
     };
 
     return layer;

@@ -46,4 +46,6 @@ La función `init_output_layer` inicializa un struct de estos en puro ruido alea
 
 La función `compute_logits` es la que se encarga de realizar la cuenta de la fórmula mencionada dos parrafos arriba.
 
+La función `softmax` es una implementación en C de la función matemática softmax.
+
 La función `predict_next_token` hace lo que dice su nombre, devolviendo la predicción del próximo token a partir de un solo input.

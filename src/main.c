@@ -8,71 +8,105 @@
 #include "dataset.h"
 #include "embeddings.h"
 #include "output_layer.h"
+#include "training.h"
 #include "defines.h"
 
-int main() {
-    srand(time(NULL));
+int main(void) {
+    srand((unsigned)time(NULL));
 
-    // 0. Preprocesar el archivo
+    /* =========================
+       1. Preprocesamiento
+       ========================= */
     preprocess_file("data.txt", "data_processed.txt");
 
-    // 1. Construir vocabulario
+    /* =========================
+       2. Vocabulario
+       ========================= */
     vocab_t vocab = vocab_init();
     build_vocab_from_file(&vocab, "data_processed.txt");
-    // print_vocab(&vocab);
 
-    // 2. Tokenizar archivo
+    printf("Vocab size: %d\n", vocab.size);
+
+    /* =========================
+       3. Tokenización
+       ========================= */
     uint8_t *ids = NULL;
     size_t ids_len = 0;
-    encode_file(&vocab, "data.txt", &ids, &ids_len);
+    encode_file(&vocab, "data_processed.txt", &ids, &ids_len);
 
-    // 3. Construir dataset
+    /* =========================
+       4. Dataset
+       ========================= */
     dataset_t dataset = build_dataset_from(ids, ids_len);
     printf("Dataset con %zu muestras\n", dataset.num_samples);
 
-    // 4. Inicializar embeddings
-    embedding_table_t emb_table = init_embeddings(vocab.size);
-
-    // 5. Inicializar output layer (matriz de pesos y vector de sesgo)
+    /* =========================
+       5. Modelo
+       ========================= */
+    embedding_table_t emb = init_embeddings(vocab.size);
     output_layer_t out = init_output_layer(vocab.size);
-    
-    // 6. Prueba de generación autorregresiva con un input elegido
+
+    /* =========================
+       6. Entrenamiento
+       ========================= */
+
+    train(
+    &dataset,
+    &emb,
+    &out);
+
+
+    /* =========================
+       7. Generación
+       ========================= */
+    printf("\n=== Generación ===\n");
+
     uint8_t context[MAX_CONTEXT_SIZE];
-    memcpy(context, dataset.inputs[93000], MAX_CONTEXT_SIZE);
+    memcpy(context, dataset.inputs[0], MAX_CONTEXT_SIZE);
 
-    // printf("Input: [");
-    // for (int i = 0; i < MAX_CONTEXT_SIZE; i++){
-    //     printf("%d", context[i]);
-    //     if (!(i == MAX_CONTEXT_SIZE-1)){
-    //         printf(", ");
-    //     }
-    // }
-    // printf("]\n");
-
-    int steps = 20;
-
+    int steps = 100;
 
     for (int i = 0; i < steps; i++) {
-        uint8_t next = predict_next_token(&emb_table, &out, context);
+        uint8_t next = predict_next_token(&emb, &out, context);
+        char ch = vocab.id_to_char[next];
 
-        uint8_t ch = vocab.id_to_char[next];
-        int16_t num = vocab.char_to_id[ch];
-        printf("%d ", next);
-        printf("%d ", num);
-        printf("%c ", ch);
-
-        printf("\n");
-        // shift de la ventana
-        for (int j = 0; j < MAX_CONTEXT_SIZE - 1; j++) {
-            context[j] = context[j + 1];
+        if (next >= vocab.size) {
+            printf("[ERROR] token fuera de vocab: %d\n", next);
+            break;
         }
+
+        putchar(ch);
+
+        /* shift del contexto */
+        memmove(
+            context,
+            context + 1,
+            (MAX_CONTEXT_SIZE - 1) * sizeof(uint8_t)
+        );
         context[MAX_CONTEXT_SIZE - 1] = next;
     }
 
+    putchar('\n');
+
+    /* =========================
+       8. Cleanup
+       ========================= */
     
     free(ids);
 
+    for (size_t i = 0; i < dataset.num_samples; i++) {
+        free(dataset.inputs[i]);
+    }
+    free(dataset.inputs);
+    free(dataset.targets);
+
+    free(emb.data);
+    free(emb.dE);
+
+    free(out.b);
+    free(out.db);
+    free(out.W);
+    free(out.dW);
+
     return 0;
 }
-
-
