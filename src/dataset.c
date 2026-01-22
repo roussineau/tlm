@@ -3,11 +3,11 @@
 dataset_t build_dataset_from(uint8_t *ids, size_t length){
 
     // Paso 1: reservar memoria
-    size_t num_total_samples = length * MAX_CONTEXT_SIZE - ((MAX_CONTEXT_SIZE * (MAX_CONTEXT_SIZE + 1)) / 2);
+    size_t num_total_samples = length * CONTEXT_SIZE - ((CONTEXT_SIZE * (CONTEXT_SIZE + 1)) / 2);
 
     uint8_t **inputs = malloc(num_total_samples * sizeof(uint8_t*));
     for (size_t i = 0; i < num_total_samples; i++) {
-        inputs[i] = malloc(MAX_CONTEXT_SIZE * sizeof(uint8_t));
+        inputs[i] = malloc(CONTEXT_SIZE * sizeof(uint8_t));
     }
 
     uint8_t *targets = malloc(num_total_samples * sizeof(uint8_t));
@@ -15,16 +15,16 @@ dataset_t build_dataset_from(uint8_t *ids, size_t length){
     // Paso 2: empezar a llenar los inputs y targets
     size_t row = 0;
 
-    // Vamos a ir llenando secuencialmente todos los samples de contexto con longitud 1, 2, ..., MAX_CONTEXT_SIZE
+    // Vamos a ir llenando secuencialmente todos los samples de contexto con longitud 1, 2, ..., CONTEXT_SIZE
     // Duda: rever este orden más adelante
     size_t current_context_size = 1;
-    while (current_context_size <= MAX_CONTEXT_SIZE) {
+    while (current_context_size <= CONTEXT_SIZE) {
 
         size_t num_samples = length - current_context_size;
 
         for(size_t sample = 0; sample < num_samples; sample++) {
 
-            size_t pad = MAX_CONTEXT_SIZE - current_context_size;
+            size_t pad = CONTEXT_SIZE - current_context_size;
             // Padding
             for (size_t i = 0; i < pad; i++) {
                 inputs[row][i] = 0;

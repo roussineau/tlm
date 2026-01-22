@@ -34,7 +34,7 @@ void embed_and_aggregate(embedding_table_t *table, uint8_t *input, float *out_co
         out_context_vector[i] = 0;
     }
 
-    for (int j = 0; j < MAX_CONTEXT_SIZE; j++){
+    for (int j = 0; j < CONTEXT_SIZE; j++){
         float *embed = get_embedding_from_id(table, input[j]);
         for (int i = 0; i < EMBEDDING_DIM; i++){
             out_context_vector[i] += embed[i];

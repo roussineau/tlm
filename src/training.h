@@ -24,24 +24,21 @@ void backward_output_layer(
     float *dW,
     float *db,
     const float *W,
-    uint16_t vocab_size,
-    uint16_t embed_dim
+    uint16_t vocab_size
 );
 
 // dE
 void backward_embeddings(
     const uint8_t *context_ids,
     const float *dcontext,
-    embedding_table_t *emb,
-    uint16_t embed_dim
+    embedding_table_t *emb
 );
 
 // Updates
 
 void update_output_layer(
     output_layer_t *out,
-    float learning_rate,
-    uint16_t embed_dim
+    float learning_rate
 );
 
 void update_embeddings(
