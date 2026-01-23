@@ -76,10 +76,10 @@ void softmax(float *logit, float *probs, uint16_t vocab_size){
     }
 }
 
-uint8_t predict_next_token(embedding_table_t *emb, output_layer_t *out, uint8_t *context_ids){
+uint8_t predict_next_token(embedding_table_t *tokens, embedding_table_t *positions, output_layer_t *out, uint8_t *context_ids){
     // La ventana de IDs que usamos es context_ids
     float context_vector[EMBEDDING_DIM];
-    embed_and_aggregate(emb, context_ids, context_vector);
+    embed_and_aggregate(tokens, positions, context_ids, context_vector);
     
     float logits[out->vocab_size];
     compute_logits(out, context_vector, logits);

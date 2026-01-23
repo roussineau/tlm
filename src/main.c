@@ -32,12 +32,12 @@ int main(void) {
    printf("Dataset con %zu muestras\n", dataset.num_samples);
 
    // 5. Modelo
-   embedding_table_t emb = init_embeddings(vocab.size);
+   embedding_table_t emb = init_id_embeddings(vocab.size);
+   embedding_table_t pos = init_pos_embeddings();
    output_layer_t out = init_output_layer(vocab.size);
 
    // 6. Entrenamiento
-   train(&dataset, &emb, &out);
-
+   train(&dataset, &emb, &pos, &out);
    // 7. Generación
    printf("\n=== Generación ===\n");
    uint8_t context[CONTEXT_SIZE];
@@ -46,7 +46,7 @@ int main(void) {
    int steps = 200;
 
    for (int i = 0; i < steps; i++) {
-      uint8_t next = predict_next_token(&emb, &out, context);
+      uint8_t next = predict_next_token(&emb, &pos, &out, context);
       char ch = vocab.id_to_char[next];
 
       if (next >= vocab.size) {
@@ -75,6 +75,9 @@ int main(void) {
 
    free(emb.data);
    free(emb.dE);
+
+   free(pos.data);
+   free(pos.dE);
 
    free(out.b);
    free(out.db);

@@ -54,7 +54,8 @@ void backward_output_layer(
 void backward_embeddings(
     const uint8_t *context_ids,
     const float *dcontext,
-    embedding_table_t *emb
+    embedding_table_t *emb,
+    embedding_table_t *pos
 ){
     float scale = 1.0f / CONTEXT_SIZE;
 
@@ -63,8 +64,9 @@ void backward_embeddings(
         if (token_id == 0) continue;
 
         for (int j = 0; j < EMBEDDING_DIM; j++){
-            emb->dE[token_id * EMBEDDING_DIM + j]
-                += scale * dcontext[j];
+            float grad = scale * dcontext[j];
+            emb->dE[token_id * EMBEDDING_DIM + j] += grad;
+            pos->dE[t * EMBEDDING_DIM + j] += grad;
         }
     }
 }
@@ -92,13 +94,19 @@ void update_output_layer(
 
 void update_embeddings(
     embedding_table_t *emb,
+    embedding_table_t *pos,
     float learning_rate
 ){
-    int size = emb->vocab_size * EMBEDDING_DIM;
+    int size = emb->size * EMBEDDING_DIM;
 
     for (int i = 0; i < size; i++) {
         emb->data[i] -= learning_rate * emb->dE[i];
         emb->dE[i] = 0.0f;
+    }
+
+    for (int i = 0; i < pos->size * EMBEDDING_DIM; i++) {
+        pos->data[i] -= learning_rate * pos->dE[i];
+        pos->dE[i] = 0.0f;
     }
 }
 
@@ -106,15 +114,15 @@ void update_embeddings(
 
 float train_step(
     embedding_table_t *emb,
+    embedding_table_t *pos,
     output_layer_t *out,
     uint8_t *context_ids,
     uint8_t target_id,
     float learning_rate
 ){
-    /* ---------- FORWARD ---------- */
-
+    // Forward pass
     float context[EMBEDDING_DIM];
-    embed_and_aggregate(emb, context_ids, context);
+    embed_and_aggregate(emb, pos, context_ids, context);
 
     float logits[out->vocab_size];
     compute_logits(out, context, logits);
@@ -124,12 +132,10 @@ float train_step(
     float probs[out->vocab_size];
     softmax(logits, probs, out->vocab_size);
 
-    /* ---------- LOSS ---------- */
-
+    // Loss
     float loss = cross_entropy_loss(probs, target_id);
 
-    /* ---------- BACKWARD ---------- */
-
+    // Backward pass
     float dlogits[out->vocab_size];
     backward_logits(probs, target_id, dlogits, out->vocab_size);
 
@@ -147,24 +153,24 @@ float train_step(
     backward_embeddings(
         context_ids,
         dcontext,
-        emb
+        emb,
+        pos
     );
 
-    /* ---------- UPDATE ---------- */
-
+    // Updates
     update_output_layer(out, learning_rate);
-    update_embeddings(emb, learning_rate);
+    update_embeddings(emb, pos, learning_rate);
 
     return loss;
 }
 
-void train(dataset_t *dataset, embedding_table_t *emb, output_layer_t *out){
-    int epochs = 3;
-    float lr = 0.03f;
+void train(dataset_t *dataset, embedding_table_t *emb, embedding_table_t *pos, output_layer_t *out){
+    int epochs = 5;
+    float lr = 0.05f;
     for (int e = 0; e < epochs; e++) {
         float total_loss = 0.0f;
         for (size_t i = 0; i < dataset->num_samples; i++) {
-            total_loss += train_step(emb, out, dataset->inputs[i], dataset->targets[i], lr);
+            total_loss += train_step(emb, pos, out, dataset->inputs[i], dataset->targets[i], lr);
         }
         printf("Epoch %d | Loss promedio: %.4f\n", e, total_loss / dataset->num_samples);
     }

@@ -19,6 +19,6 @@ void compute_logits(output_layer_t *layer, float *context, float *out_logits);
 
 void softmax(float *logit, float *probs, uint16_t n);
 
-uint8_t predict_next_token(embedding_table_t *emb, output_layer_t *out, uint8_t *context);
+uint8_t predict_next_token(embedding_table_t *emb, embedding_table_t *pos, output_layer_t *out, uint8_t *context);
 
 #endif

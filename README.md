@@ -1,4 +1,4 @@
-# Desarrollo a través del tiempo
+# Primera arquitectura (suma y promedio de embeddings)
 
 Este proyecto empezó con la idea de aprender dos cosas:
 * Lenguaje C, manejo de memoria, punteros, etc., con la idea de preparar un poco el terreno para la universidad.
@@ -26,9 +26,11 @@ Construido el dataset, el modelo no va a aprender de números enteros. Hay que c
 
 ### embedding_table_t
 El struct de este módulo tiene como atributos:
-* `vocab_size`, un entero sin signo de 16 bits porque queremos llegar hasta 256 inclusive como máximo.
+* `size`, un entero sin signo de 16 bits.
 * `data`, un puntero a floats que se va a usar como una lista o matriz de vectores, considerando que todos tienen un tamaño fijo definido en `defines.h` llamado `EMBEDDING_DIM`. El token iésimo tendrá el embedding `data[i]` si lo pensamos como lista, considerando que en la indexación la i está multiplicada por el tamaño de los embeddings.
 * `dE`, un buffer de gradientes para los embeddings. En la etapa de aprendizaje, este atributo es el que nos permitirá ir acercando tokens que sean semejantes en el espacio vectorial (como por ejemplo, vocales cerca de otras vocales, signos de puntuación entre sí, etc.).
+
+Más adelante reutilizaremos este struct para crear los positional embeddings, cuando estemos perfeccionando un modelo que ya funciona byte a byte pero no genera palabras en sí.
 
 La primera función distintiva y característica del aprendizaje automático en este proyecto: `embed_and_aggregate` toma un input (arreglo de IDs) y "colapsa" todos los embeddings de los IDs en un solo vector llamado `context_vector`, sumándolos.
 
@@ -57,3 +59,16 @@ La función `predict_next_token` hace lo que dice su nombre, devolviendo la pred
 Este módulo es el que tiene todas las funciones matemáticas puras que se utilizan para entrenar el modelo. Es básicamente casi todo el bakcward pass, que seguramente se vea más claro luego del siguiente esquema visual:
 
 ![Esquema del modelo inicial (byte-level)](assets/byte-level_scheme.svg)
+
+> Agregar las justificaciones matemáticas más adelante
+
+---
+
+Terminada esta arquitectura, ya contamos con un modelo estadístico que hace predicciones byte a byte; sin embargo, la idea inicial era hacer un modelo que pueda llegar a escribir palabras o incluso una oración. En el estado actual, esto no es posible con un archivo de texto "normal", o sea, con muchas palabras muy distintas entre sí. Sí se podría con un texto de 2000 líneas que solo diga "Queso." en cada una de ellas.
+
+Por este motivo, ahora vamos a trabajar sobre este esqueleto para mejorarlo hasta alcanzar nuestra meta. El primer paso fue agregar positional embeddings. Sin embargo, el modelo todavía no genera palabras, ya que los positional embeddings no son lo suficientemente "únicos" y termina perdiéndose la información de la posición de los tokens.
+
+Vamos a reestructurar la arquitectura del modelo dejando atrás la suma y promedio, y pasando a concatenación.
+
+# Segunda arquitectura (concatenación de embeddings)
+

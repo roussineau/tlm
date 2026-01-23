@@ -27,11 +27,12 @@ void backward_output_layer(
     uint16_t vocab_size
 );
 
-// dE
+// dE y dP
 void backward_embeddings(
     const uint8_t *context_ids,
     const float *dcontext,
-    embedding_table_t *emb
+    embedding_table_t *emb,
+    embedding_table_t *pos
 );
 
 // Updates
@@ -43,6 +44,7 @@ void update_output_layer(
 
 void update_embeddings(
     embedding_table_t *emb,
+    embedding_table_t *pos,
     float learning_rate
 );
 
@@ -50,6 +52,7 @@ void update_embeddings(
 
 float train_step(
     embedding_table_t *emb,
+    embedding_table_t *pos,
     output_layer_t *out,
     uint8_t *context_ids,
     uint8_t target_id,
@@ -59,6 +62,7 @@ float train_step(
 void train(
     dataset_t *dataset,
     embedding_table_t *emb,
+    embedding_table_t *pos,
     output_layer_t *out
 );
 
