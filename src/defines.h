@@ -10,4 +10,7 @@
 // Embeddings
 #define EMBEDDING_DIM 16
 
+// Hidden layer
+#define HIDDEN_DIM 128
+
 #endif

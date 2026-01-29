@@ -7,7 +7,7 @@
 #include "tokenizer.h"
 #include "dataset.h"
 #include "embeddings.h"
-#include "output_layer.h"
+#include "layer.h"
 #include "training.h"
 #include "defines.h"
 
@@ -34,10 +34,12 @@ int main(void) {
    // 5. Modelo
    embedding_table_t emb = init_id_embeddings(vocab.size);
    embedding_table_t pos = init_pos_embeddings();
-   output_layer_t out = init_output_layer(vocab.size);
+   layer_t hidden = init_layer(HIDDEN_DIM * CONTEXT_SIZE, HIDDEN_DIM);
+   layer_t out = init_layer(HIDDEN_DIM, vocab.size);
 
    // 6. Entrenamiento
-   train(&dataset, &emb, &pos, &out);
+   train(&dataset, &emb, &pos, &hidden, &out);
+   
    // 7. Generación
    printf("\n=== Generación ===\n");
    uint8_t context[CONTEXT_SIZE];
@@ -46,7 +48,7 @@ int main(void) {
    int steps = 200;
 
    for (int i = 0; i < steps; i++) {
-      uint8_t next = predict_next_token(&emb, &pos, &out, context);
+      uint8_t next = predict_next_token(&emb, &pos, &hidden, &out, context);
       char ch = vocab.id_to_char[next];
 
       if (next >= vocab.size) {

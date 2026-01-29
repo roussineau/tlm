@@ -62,4 +62,25 @@ void embed_and_aggregate(embedding_table_t *tokens, embedding_table_t *positions
     }
 }
 
+void embed_and_concatenate(embedding_table_t *tokens, embedding_table_t *positions, uint8_t *input, float *out_context_vector){
+    // Dimensiones de out_vector: EMBEDDINGS_DIM x CONTEXT_SIZE (un embedding por cada ID del contexto)
 
+    // Paso 0: cerear la salida
+    for (int i = 0; i < EMBEDDING_DIM * CONTEXT_SIZE; i++) {
+        out_context_vector[i] = 0;
+    }
+
+    // Paso 1: sumar el embeddings de token con embeddings posicionales
+    for (int j = 0; j < CONTEXT_SIZE; j++){
+        if (input[j] == 0) continue; // El padding no aporta información
+        float *token_embed = get_embedding_from(tokens, input[j]);
+        float *pos_embed   = get_embedding_from(positions, j);
+
+        for (int i = 0; i < EMBEDDING_DIM; i++) {
+            out_context_vector[j * EMBEDDING_DIM + i] =  token_embed[i] + pos_embed[i];
+        }
+    }
+
+    // Paso 2: concatenar
+    // Técnicamente ya está todo concatenado, por las dimensiones del out_context_vector ya mencionadas
+}

@@ -37,7 +37,7 @@ La primera función distintiva y característica del aprendizaje automático en 
 ## Output layer
 Dado un input (repito, vector de IDs), ¿qué va a responder el modelo? ¿cuál es la secuencia de IDs más probable?
 
-### output_layer_t
+### layer_t
 El struct de este módulo tiene como atributos:
 * `vocab_size`, del mismo propósito que en la `embedding_table_t`.
 * `W`, matriz de pesos (Weight).
@@ -49,7 +49,7 @@ Acá entra la fórmula `logit = W.h + b`. Básicamente son operaciones de álgeb
 
 La función `init_output_layer` inicializa un struct de estos en puro ruido aleatorio (pseudoaleatorio, que ya cursé LFAyC). Más adelante, cuando agreguemos aprendizaje, se va a estabilizar.
 
-La función `compute_logits` es la que se encarga de realizar la cuenta de la fórmula mencionada dos parrafos arriba.
+La función `linear_transform` es la que se encarga de realizar la cuenta de la fórmula mencionada dos parrafos arriba.
 
 La función `softmax` es una implementación en C de la función matemática softmax.
 
